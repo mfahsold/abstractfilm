@@ -150,10 +150,15 @@ class VideoPipeline:
                 morphed, flow_magnitude, frame_index, morph_strength
             )
 
+            flow_texture = self._prepare_flow_texture(flow)
+            luminance = self._compute_luminance(frame_bgr)
+
             processed = self._effect_processor.process(
                 morphed,
+                flow_texture,
                 frame_index=frame_index,
                 morph_strength=morph_strength,
+                luminance=luminance,
             )
             graded = self._apply_grading(processed, params, morph_strength, frame_index)
 
@@ -243,7 +248,11 @@ class VideoPipeline:
                 lut = color_grading.load_cube_lut(lut_path)
                 self._lut_cache[lut_path] = lut
             frame_bgr = color_grading.apply_lut(frame_bgr, lut)
-        profile = params.effects_profile or self.config.effects_profile
+        profile = None
+        if self._effect_processor is not None:
+            profile = self._effect_processor.effect_settings
+        if profile is None:
+            profile = params.effects_profile or self.config.effects_profile
         grading_settings = profile.grading if profile else None
         frame_bgr = color_grading.retro_neon_grade(frame_bgr, grading_settings=grading_settings)
         if params.glow_boost:
@@ -358,6 +367,22 @@ class VideoPipeline:
             return None
         _, profile = self._variant_profiles[shot_index % len(self._variant_profiles)]
         return profile
+
+    def _compute_luminance(self, frame_bgr: np.ndarray) -> float:
+        gray = cv2.cvtColor(frame_bgr, cv2.COLOR_BGR2GRAY)
+        return float(np.mean(gray) / 255.0)
+
+    def _prepare_flow_texture(self, flow: np.ndarray) -> np.ndarray:
+        if flow.size == 0:
+            if self._effect_processor is not None:
+                return np.zeros((self._effect_processor.height, self._effect_processor.width, 2), dtype=np.float32)
+            return np.zeros((1, 1, 2), dtype=np.float32)
+        flow_norm = np.linalg.norm(flow, axis=2)
+        scale = np.percentile(flow_norm, 95)
+        if not np.isfinite(scale) or scale < 1e-3:
+            scale = 1.0
+        normalized = np.clip(flow / scale, -1.0, 1.0)
+        return normalized.astype(np.float32)
 
 def pipeline_from_config(config: PipelineConfig) -> VideoPipeline:
     logger.info("Pipeline configuration: %s", json.dumps(asdict(config), default=str, indent=2))

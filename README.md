@@ -8,6 +8,7 @@ Dieses Projekt implementiert eine lokale, modulare Videoverarbeitungspipeline, d
 - GPU-Feedback-Loops via ModernGL (Reaction-Diffusion, Noise, Glow)
 - Kapselbare Effektprofile (Preview/Full + Variant-Rotation oder eigene YAML/JSON-Profile)
 - Farbkomposition mit LUT-Unterstützung, Retro-Neon-Gradings und Analog-Overlays (Grain, Flicker, Vignette)
+- Gray-Scott-Reaktionsdiffusion mit optischem Fluss als Advektionsfeld für lebendige Muster
 - CLI-basierte Workflows für Preview- und Produktions-Renderings
 
 ## Quickstart
@@ -47,4 +48,9 @@ python -m src.main --input assets/video.mp4 --output output/final.mp4 --full --s
 Eigenes Effektprofil anschließen:
 ```bash
 python -m src.main --input assets/video.mp4 --output output/alt_preview.mp4 --preview --effects-profile effects_profiles/custom.yaml
+```
+
+Filmkonfiguration (Gray-Scott + Variantenmix) über Preset:
+```bash
+python -m src.main --input assets/video.mp4 --output output/final.mp4 --preset preview_configs/film_full.yaml
 ```

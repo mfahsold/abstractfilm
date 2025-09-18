@@ -13,19 +13,33 @@ logger = logging.getLogger(__name__)
 
 @dataclass
 class ReactionDiffusionSettings:
-    diffusion_base: float = 0.8
-    diffusion_scale: float = 0.2
-    feedback_base: float = 0.4
-    feedback_scale: float = 0.1
-    time_step: float = 0.6
+    diffusion_u_base: float = 0.16
+    diffusion_u_scale: float = 0.04
+    diffusion_v_base: float = 0.08
+    diffusion_v_scale: float = 0.03
+    feed_base: float = 0.055
+    feed_scale: float = 0.02
+    kill_base: float = 0.062
+    kill_scale: float = 0.02
+    advection_base: float = 0.18
+    advection_scale: float = 0.28
+    drive_influence: float = 0.08
+    motion_floor: float = 0.18
+    time_step: float = 1.0
 
 
 @dataclass
 class FeedbackSettings:
-    rd_mix_base: float = 0.35
+    rd_mix_base: float = 0.25
     rd_mix_scale: float = 0.25
+    rd_mix_min: float = 0.1
+    rd_mix_max: float = 0.6
     glow_strength: float = 1.0
-    rd_mix_max: float = 0.75
+    glow_color: Tuple[float, float, float] = (1.0, 0.35, 0.85)
+    luminance_influence: float = 0.15
+    displacement_strength: float = 0.02
+    height_scale: float = 1.5
+    light_dir: Tuple[float, float, float] = (0.25, 0.6, 1.0)
 
 
 @dataclass
@@ -58,17 +72,31 @@ class EffectSettings:
         grading_data = data.get("grading", {})
         analog_data = data.get("analog", {})
         rd = ReactionDiffusionSettings(
-            diffusion_base=float(rd_data.get("diffusion_base", 0.8)),
-            diffusion_scale=float(rd_data.get("diffusion_scale", 0.2)),
-            feedback_base=float(rd_data.get("feedback_base", 0.4)),
-            feedback_scale=float(rd_data.get("feedback_scale", 0.1)),
-            time_step=float(rd_data.get("time_step", 0.6)),
+            diffusion_u_base=float(rd_data.get("diffusion_u_base", rd_data.get("diffusion_base", 0.16))),
+            diffusion_u_scale=float(rd_data.get("diffusion_u_scale", rd_data.get("diffusion_scale", 0.04))),
+            diffusion_v_base=float(rd_data.get("diffusion_v_base", rd_data.get("diffusion_secondary_base", 0.08))),
+            diffusion_v_scale=float(rd_data.get("diffusion_v_scale", rd_data.get("diffusion_secondary_scale", 0.03))),
+            feed_base=float(rd_data.get("feed_base", rd_data.get("feedback_base", 0.055))),
+            feed_scale=float(rd_data.get("feed_scale", rd_data.get("feedback_scale", 0.02))),
+            kill_base=float(rd_data.get("kill_base", 0.062)),
+            kill_scale=float(rd_data.get("kill_scale", 0.02)),
+            advection_base=float(rd_data.get("advection_base", 0.18)),
+            advection_scale=float(rd_data.get("advection_scale", 0.28)),
+            drive_influence=float(rd_data.get("drive_influence", 0.08)),
+            motion_floor=float(rd_data.get("motion_floor", 0.18)),
+            time_step=float(rd_data.get("time_step", 1.0)),
         )
         fb = FeedbackSettings(
-            rd_mix_base=float(fb_data.get("rd_mix_base", 0.35)),
+            rd_mix_base=float(fb_data.get("rd_mix_base", 0.25)),
             rd_mix_scale=float(fb_data.get("rd_mix_scale", 0.25)),
+            rd_mix_min=float(fb_data.get("rd_mix_min", 0.1)),
+            rd_mix_max=float(fb_data.get("rd_mix_max", 0.6)),
             glow_strength=float(fb_data.get("glow_strength", 1.0)),
-            rd_mix_max=float(fb_data.get("rd_mix_max", 0.75)),
+            glow_color=_ensure_tuple(fb_data.get("glow_color", (1.0, 0.35, 0.85))),
+            luminance_influence=float(fb_data.get("luminance_influence", 0.15)),
+            displacement_strength=float(fb_data.get("displacement_strength", 0.02)),
+            height_scale=float(fb_data.get("height_scale", 1.5)),
+            light_dir=_ensure_tuple(fb_data.get("light_dir", (0.25, 0.6, 1.0))),
         )
         grading = GradingSettings(
             saturation_boost=float(grading_data.get("saturation_boost", 1.2)),

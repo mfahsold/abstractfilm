@@ -1,0 +1,43 @@
+# Vollkonfiguration für den abstrakten Morphing-Kunstfilm.
+# Die meisten CLI-Flags können entfallen – einfach mit --preset aufrufen.
+
+full: true
+scene_detect: true
+include_audio: true
+width: 1280
+height: 720
+flow_algo: FARNEBACK
+flow_scale: 1.05
+rd_steps: 6
+random_seed: 42
+effects_profile: effects_profiles/full.yaml
+
+# Frame-Export optional aktivieren, z. B. zur Qualitätskontrolle
+frame_export: false
+output_frame_pattern: output/frames/frame_{index:05d}.png
+
+scene_params:
+  default:
+    morph_alpha: 0.42
+    flow_strength: 1.0
+    glow_boost: 0.18
+  shot_0:
+    effects_profile: effects_profiles/variant_a.yaml
+    morph_alpha: 0.38
+    flow_strength: 0.95
+    glow_boost: 0.15
+  shot_1:
+    effects_profile: effects_profiles/variant_b.yaml
+    morph_alpha: 0.44
+    flow_strength: 1.05
+    glow_boost: 0.20
+  shot_2:
+    effects_profile: effects_profiles/variant_c.yaml
+    morph_alpha: 0.40
+    flow_strength: 1.1
+    glow_boost: 0.22
+  shot_3:
+    effects_profile: effects_profiles/full.yaml
+    morph_alpha: 0.46
+    flow_strength: 0.9
+    glow_boost: 0.17

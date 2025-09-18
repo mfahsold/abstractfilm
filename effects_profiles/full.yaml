@@ -1,19 +1,33 @@
 reaction_diffusion:
-  diffusion_base: 0.92
-  diffusion_scale: 0.38
-  feedback_base: 0.52
-  feedback_scale: 0.30
-  time_step: 0.72
+  diffusion_u_base: 0.24
+  diffusion_u_scale: 0.08
+  diffusion_v_base: 0.12
+  diffusion_v_scale: 0.06
+  feed_base: 0.058
+  feed_scale: 0.028
+  kill_base: 0.064
+  kill_scale: 0.030
+  advection_base: 0.22
+  advection_scale: 0.40
+  drive_influence: 0.10
+  motion_floor: 0.25
+  time_step: 1.05
 feedback:
-  rd_mix_base: 0.28
-  rd_mix_scale: 0.30
+  rd_mix_base: 0.20
+  rd_mix_scale: 0.26
+  rd_mix_min: 0.14
   rd_mix_max: 0.62
-  glow_strength: 1.35
+  glow_strength: 1.45
+  glow_color: [1.25, 0.35, 1.35]
+  luminance_influence: 0.28
+  displacement_strength: 0.028
+  height_scale: 2.2
+  light_dir: [0.25, 0.70, 1.00]
 grading:
-  saturation_boost: 1.55
-  shadow_tint: [0.70, 0.60, 1.30]
-  highlight_tint: [1.40, 1.05, 0.70]
+  saturation_boost: 1.70
+  shadow_tint: [0.70, 0.55, 1.35]
+  highlight_tint: [1.55, 1.00, 0.70]
 analog:
-  film_grain: 0.08
-  vignette: 0.16
-  flicker: 0.08
+  film_grain: 0.10
+  vignette: 0.18
+  flicker: 0.10
