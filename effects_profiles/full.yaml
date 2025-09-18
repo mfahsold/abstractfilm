@@ -1,0 +1,14 @@
+reaction_diffusion:
+  diffusion_base: 0.85
+  diffusion_scale: 0.30
+  feedback_base: 0.45
+  feedback_scale: 0.22
+  time_step: 0.7
+feedback:
+  rd_mix_base: 0.40
+  rd_mix_scale: 0.35
+  glow_strength: 1.2
+grading:
+  saturation_boost: 1.35
+  shadow_tint: [0.75, 0.85, 1.25]
+  highlight_tint: [1.35, 1.0, 0.85]

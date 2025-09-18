@@ -1,0 +1,20 @@
+{
+  "config_name": "fast_preview",
+  "preview": true,
+  "preview_mode": true,
+  "width": 640,
+  "height": 360,
+  "rd_steps": 1,
+  "glow": false,
+  "flow_algo": "DIS",
+  "flow_preset": "ULTRAFAST",
+  "frame_export": false,
+  "effects_profile": "effects_profiles/preview.yaml",
+  "scene_params": {
+    "default": {
+      "flow_strength": 0.8,
+      "morph_alpha": 0.6,
+      "glow_boost": 0.2
+    }
+  }
+}
