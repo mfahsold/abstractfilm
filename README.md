@@ -6,8 +6,8 @@ Dieses Projekt implementiert eine lokale, modulare Videoverarbeitungspipeline, d
 - Shot-Erkennung mit PySceneDetect und konfigurierbaren Szeneparametern
 - Optical-Flow-gestütztes Morphing (Farneback oder DIS) inklusive Remapping-Blend
 - GPU-Feedback-Loops via ModernGL (Reaction-Diffusion, Noise, Glow)
-- Kapselbare Effektprofile (Preview/Full oder eigene YAML/JSON-Profile)
-- Farbkomposition mit LUT-Unterstützung und optionalem FFmpeg-Postprocessing
+- Kapselbare Effektprofile (Preview/Full + Variant-Rotation oder eigene YAML/JSON-Profile)
+- Farbkomposition mit LUT-Unterstützung, Retro-Neon-Gradings und Analog-Overlays (Grain, Flicker, Vignette)
 - CLI-basierte Workflows für Preview- und Produktions-Renderings
 
 ## Quickstart

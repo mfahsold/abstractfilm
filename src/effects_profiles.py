@@ -25,6 +25,7 @@ class FeedbackSettings:
     rd_mix_base: float = 0.35
     rd_mix_scale: float = 0.25
     glow_strength: float = 1.0
+    rd_mix_max: float = 0.75
 
 
 @dataclass
@@ -35,18 +36,27 @@ class GradingSettings:
 
 
 @dataclass
+class AnalogSettings:
+    film_grain: float = 0.05
+    vignette: float = 0.1
+    flicker: float = 0.04
+
+
+@dataclass
 class EffectSettings:
     reaction_diffusion: ReactionDiffusionSettings = field(
         default_factory=ReactionDiffusionSettings
     )
     feedback: FeedbackSettings = field(default_factory=FeedbackSettings)
     grading: GradingSettings = field(default_factory=GradingSettings)
+    analog: AnalogSettings = field(default_factory=AnalogSettings)
 
     @classmethod
     def from_dict(cls, data: Dict[str, Any]) -> "EffectSettings":
         rd_data = data.get("reaction_diffusion", {})
         fb_data = data.get("feedback", {})
         grading_data = data.get("grading", {})
+        analog_data = data.get("analog", {})
         rd = ReactionDiffusionSettings(
             diffusion_base=float(rd_data.get("diffusion_base", 0.8)),
             diffusion_scale=float(rd_data.get("diffusion_scale", 0.2)),
@@ -58,13 +68,19 @@ class EffectSettings:
             rd_mix_base=float(fb_data.get("rd_mix_base", 0.35)),
             rd_mix_scale=float(fb_data.get("rd_mix_scale", 0.25)),
             glow_strength=float(fb_data.get("glow_strength", 1.0)),
+            rd_mix_max=float(fb_data.get("rd_mix_max", 0.75)),
         )
         grading = GradingSettings(
             saturation_boost=float(grading_data.get("saturation_boost", 1.2)),
             shadow_tint=_ensure_tuple(grading_data.get("shadow_tint", (0.8, 0.9, 1.2))),
             highlight_tint=_ensure_tuple(grading_data.get("highlight_tint", (1.2, 1.0, 0.8))),
         )
-        return cls(reaction_diffusion=rd, feedback=fb, grading=grading)
+        analog = AnalogSettings(
+            film_grain=float(analog_data.get("film_grain", 0.05)),
+            vignette=float(analog_data.get("vignette", 0.1)),
+            flicker=float(analog_data.get("flicker", 0.04)),
+        )
+        return cls(reaction_diffusion=rd, feedback=fb, grading=grading, analog=analog)
 
 
 def _ensure_tuple(values: Any) -> Tuple[float, float, float]:

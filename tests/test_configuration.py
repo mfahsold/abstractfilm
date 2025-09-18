@@ -31,5 +31,5 @@ def test_preview_flag_adjusts_defaults(tmp_path):
     config = build_config(cli_args)
     assert config.mode == "preview"
     assert config.width == 640
-    assert config.rd_steps == 1
+    assert config.rd_steps == 2
     assert config.effects_profile is not None

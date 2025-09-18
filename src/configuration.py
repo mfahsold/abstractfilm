@@ -118,7 +118,7 @@ class PipelineConfig:
             if "height" not in self.cli_overrides and self.height is None:
                 self.height = 360
             if "rd_steps" not in self.cli_overrides:
-                self.rd_steps = 1
+                self.rd_steps = 2
             if "glow" not in self.cli_overrides:
                 self.glow = False
             if "flow_algo" not in self.cli_overrides:

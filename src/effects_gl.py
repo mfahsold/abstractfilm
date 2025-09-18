@@ -118,21 +118,21 @@ class ArtEffectProcessor:
         ]
         for tex in self._state_textures:
             tex.filter = (moderngl.LINEAR, moderngl.LINEAR)
-            tex.repeat_x = False
-            tex.repeat_y = False
+            tex.repeat_x = True
+            tex.repeat_y = True
             tex.write(zero_state.tobytes())
 
         self._state_fbos = [self._ctx.framebuffer(color_attachments=[tex]) for tex in self._state_textures]
 
         self._frame_tex = self._ctx.texture(size=(self.width, self.height), components=4, dtype="f4")
         self._frame_tex.filter = (moderngl.LINEAR, moderngl.LINEAR)
-        self._frame_tex.repeat_x = False
-        self._frame_tex.repeat_y = False
+        self._frame_tex.repeat_x = True
+        self._frame_tex.repeat_y = True
 
         self._compose_tex = self._ctx.texture(size=(self.width, self.height), components=4, dtype="f4")
         self._compose_tex.filter = (moderngl.LINEAR, moderngl.LINEAR)
-        self._compose_tex.repeat_x = False
-        self._compose_tex.repeat_y = False
+        self._compose_tex.repeat_x = True
+        self._compose_tex.repeat_y = True
         self._compose_fbo = self._ctx.framebuffer(color_attachments=[self._compose_tex])
 
         self._rd_program = self._ctx.program(vertex_shader=vertex_src, fragment_shader=rd_src)
@@ -194,6 +194,7 @@ class ArtEffectProcessor:
         self._feedback_program["video_tex"].value = 1
         fb = self.effect_settings.feedback
         rd_mix = fb.rd_mix_base + fb.rd_mix_scale * morph_strength
+        rd_mix = min(rd_mix, fb.rd_mix_max)
         glow_value = fb.glow_strength * self.glow_strength if self.glow else 0.0
         self._feedback_program["rd_mix"].value = rd_mix
         self._feedback_program["glow_strength"].value = glow_value
@@ -225,6 +226,16 @@ class ArtEffectProcessor:
         tinted = saturated * (shadow * (1.0 - mix) + highlight * mix)
         tinted = np.clip(tinted, 0.0, 1.0)
         return (tinted * 255.0).astype(np.uint8)
+
+    def prime_state(self, frame_bgr: np.ndarray) -> None:
+        if not self.enable_gpu or self._ctx is None:
+            return
+        blurred = cv2.GaussianBlur(frame_bgr, (0, 0), sigmaX=2.0)
+        rgba = cv2.cvtColor(blurred, cv2.COLOR_BGR2RGBA).astype("f4") / 255.0
+        rgba = np.flipud(rgba)
+        data = rgba.tobytes()
+        for tex in self._state_textures:
+            tex.write(data)
 
     def release(self) -> None:
         if not self.enable_gpu or self._ctx is None:

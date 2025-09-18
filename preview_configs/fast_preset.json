@@ -4,7 +4,6 @@
   "preview_mode": true,
   "width": 640,
   "height": 360,
-  "rd_steps": 1,
   "glow": false,
   "flow_algo": "DIS",
   "flow_preset": "ULTRAFAST",
